@@ -68,9 +68,33 @@ namespace Retro_Achievement_Tracker
         {
             webView21.ExecuteScriptAsync("enableBorder();");
         }
+        public void EnableDescription()
+        {
+            webView21.ExecuteScriptAsync("enableDescription();");
+        }
+        public void EnableDate()
+        {
+            webView21.ExecuteScriptAsync("enableDate();");
+        }
+        public void EnablePoints()
+        {
+            webView21.ExecuteScriptAsync("enablePoints();");
+        }
         public void DisableBorder()
         {
             webView21.ExecuteScriptAsync("disableBorder();");
+        }
+        public void DisableDescription()
+        {
+            webView21.ExecuteScriptAsync("disableDescription();");
+        }
+        public void DisableDate()
+        {
+            webView21.ExecuteScriptAsync("disableDate();");
+        }
+        public void DisablePoints()
+        {
+            webView21.ExecuteScriptAsync("disablePoints();");
         }
         public void SetTitleFontFamily(FontFamily value)
         {
@@ -99,6 +123,20 @@ namespace Retro_Achievement_Tracker
         public void SetDateOutline(string value)
         {
             webView21.ExecuteScriptAsync(string.Format("setDateOutlineColor(\"{0}\");", value));
+        }
+        public void SetDescriptionFontFamily(FontFamily value)
+        {
+            int lineSpacing = value.GetLineSpacing(FontStyle.Regular) / value.GetEmHeight(FontStyle.Regular);
+
+            webView21.ExecuteScriptAsync(string.Format("setDescriptionFontFamily(\"{0}\", \"{1}\");", value.Name.Replace(":", "\\:"), (lineSpacing == 0 ? 1 : lineSpacing).ToString()));
+        }
+        public void SetDescriptionColor(string value)
+        {
+            webView21.ExecuteScriptAsync(string.Format("setDescriptionColor(\"{0}\");", value));
+        }
+        public void SetDescriptionOutline(string value)
+        {
+            webView21.ExecuteScriptAsync(string.Format("setDescriptionOutlineColor(\"{0}\");", value));
         }
         public void SetPointsFontFamily(FontFamily value)
         {

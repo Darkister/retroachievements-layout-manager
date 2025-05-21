@@ -54,9 +54,6 @@ namespace Retro_Achievement_Tracker.Controllers
         {
             if (IsOpen)
             {
-                RecentUnlocksWindow.SetWindowBackgroundColor(WindowBackgroundColor);
-                RecentUnlocksWindow.SetBorderBackgroundColor(BorderBackgroundColor);
-
                 if (BorderEnabled)
                 {
                     RecentUnlocksWindow.EnableBorder();
@@ -66,6 +63,43 @@ namespace Retro_Achievement_Tracker.Controllers
                     RecentUnlocksWindow.DisableBorder();
                 }
 
+                if (DescriptionEnabled)
+                {
+                    RecentUnlocksWindow.EnableDescription();
+                }
+                else
+                {
+                    RecentUnlocksWindow.DisableDescription();
+                    //RefreshRecentAchievementsWindow();
+                }
+
+                if (DateEnabled)
+                {
+                    RecentUnlocksWindow.EnableDate();
+                    //RefreshRecentAchievementsWindow();
+                }
+                else
+                {
+                    RecentUnlocksWindow.DisableDate();
+                    //RefreshRecentAchievementsWindow();
+                }
+
+                if (PointsEnabled)
+                {
+                    RecentUnlocksWindow.EnablePoints();
+                    //RefreshRecentAchievementsWindow();
+                }
+                else
+                {
+                    RecentUnlocksWindow.DisablePoints();
+                    //RefreshRecentAchievementsWindow();
+                }
+
+                RefreshRecentAchievementsWindow();
+
+                RecentUnlocksWindow.SetWindowBackgroundColor(WindowBackgroundColor);
+                RecentUnlocksWindow.SetBorderBackgroundColor(BorderBackgroundColor);
+
                 if (AdvancedSettingsEnabled)
                 {
                     SetAdvancedSettings();
@@ -74,6 +108,7 @@ namespace Retro_Achievement_Tracker.Controllers
                 {
                     SetSimpleSettings();
                 }
+
             }
         }
 
@@ -85,7 +120,11 @@ namespace Retro_Achievement_Tracker.Controllers
 
             RecentUnlocksWindow.SetDateFontFamily(DateFontFamily);
             RecentUnlocksWindow.SetDateColor(DateColor);
-            RecentUnlocksWindow.SetDateOutline(DescriptionOutlineEnabled ? DateOutlineColor + " " + DescriptionOutlineSize + "px" : "0px");
+            RecentUnlocksWindow.SetDateOutline(DateOutlineEnabled ? DateOutlineColor + " " + DateOutlineSize + "px" : "0px");
+
+            RecentUnlocksWindow.SetDescriptionFontFamily(DescriptionFontFamily);
+            RecentUnlocksWindow.SetDescriptionColor(DescriptionColor);
+            RecentUnlocksWindow.SetDescriptionOutline(DescriptionOutlineEnabled ? DescriptionOutlineColor + " " + DescriptionOutlineSize + "px" : "0px");
 
             RecentUnlocksWindow.SetPointsFontFamily(PointsFontFamily);
             RecentUnlocksWindow.SetPointsColor(PointsColor);
@@ -146,6 +185,12 @@ namespace Retro_Achievement_Tracker.Controllers
             {
                 VisibileAchievements = new List<Achievement>();
             }
+        }
+        public void RefreshRecentAchievementsWindow()
+        {
+            RecentUnlocksWindow.ClearRecentAchievements();
+            RecentUnlocksWindow.AddAchievements(VisibileAchievements);
+            RecentUnlocksWindow.AssignJavaScriptVariables();
         }
         public int MaxListSize
         {
@@ -271,6 +316,31 @@ namespace Retro_Achievement_Tracker.Controllers
                 SetAllSettings();
             }
         }
+        public FontFamily DescriptionFontFamily
+        {
+            get
+            {
+                FontFamily[] familyArray = FontFamily.Families.ToArray();
+
+                foreach (FontFamily font in familyArray)
+                {
+                    if (font.Name.Equals(Settings.Default.last_five_description_font_family))
+                    {
+                        return font;
+                    }
+                }
+                Settings.Default.last_five_description_font_family = familyArray[0].Name;
+
+                return familyArray[0];
+            }
+            set
+            {
+                Settings.Default.last_five_description_font_family = value.Name;
+                Settings.Default.Save();
+
+                SetAllSettings();
+            }
+        }
         public FontFamily PointsFontFamily
         {
             get
@@ -313,6 +383,17 @@ namespace Retro_Achievement_Tracker.Controllers
             set
             {
                 Settings.Default.last_five_date_color = value;
+                Settings.Default.Save();
+
+                SetAllSettings();
+            }
+        }
+        public string DescriptionColor
+        {
+            get => Settings.Default.last_five_description_color;
+            set
+            {
+                Settings.Default.last_five_description_color = value;
                 Settings.Default.Save();
 
                 SetAllSettings();
@@ -362,6 +443,17 @@ namespace Retro_Achievement_Tracker.Controllers
                 SetAllSettings();
             }
         }
+        public string DescriptionOutlineColor
+        {
+            get => Settings.Default.last_five_description_outline_color;
+            set
+            {
+                Settings.Default.last_five_description_outline_color = value;
+                Settings.Default.Save();
+
+                SetAllSettings();
+            }
+        }
         public string PointsOutlineColor
         {
             get => Settings.Default.last_five_points_outline_color;
@@ -395,12 +487,23 @@ namespace Retro_Achievement_Tracker.Controllers
                 SetAllSettings();
             }
         }
-        public int DescriptionOutlineSize
+        public int DateOutlineSize
         {
             get => Settings.Default.last_five_date_outline_size;
             set
             {
                 Settings.Default.last_five_date_outline_size = value;
+                Settings.Default.Save();
+
+                SetAllSettings();
+            }
+        }
+        public int DescriptionOutlineSize
+        {
+            get => Settings.Default.last_five_description_outline_size;
+            set
+            {
+                Settings.Default.last_five_description_outline_size = value;
                 Settings.Default.Save();
 
                 SetAllSettings();
@@ -483,12 +586,23 @@ namespace Retro_Achievement_Tracker.Controllers
                 SetAllSettings();
             }
         }
-        public bool DescriptionOutlineEnabled
+        public bool DateOutlineEnabled
         {
             get => Settings.Default.last_five_date_outline_enabled;
             set
             {
                 Settings.Default.last_five_date_outline_enabled = value;
+                Settings.Default.Save();
+
+                SetAllSettings();
+            }
+        }
+        public bool DescriptionOutlineEnabled
+        {
+            get => Settings.Default.last_five_description_outline_enabled;
+            set
+            {
+                Settings.Default.last_five_description_outline_enabled = value;
                 Settings.Default.Save();
 
                 SetAllSettings();
@@ -522,6 +636,39 @@ namespace Retro_Achievement_Tracker.Controllers
             set
             {
                 Settings.Default.last_five_border_enable = value;
+                Settings.Default.Save();
+
+                SetAllSettings();
+            }
+        }
+        public bool DescriptionEnabled
+        {
+            get => Settings.Default.last_five_description_enable;
+            set
+            {
+                Settings.Default.last_five_description_enable = value;
+                Settings.Default.Save();
+
+                SetAllSettings();
+            }
+        }
+        public bool DateEnabled
+        {
+            get => Settings.Default.last_five_date_enable;
+            set
+            {
+                Settings.Default.last_five_date_enable = value;
+                Settings.Default.Save();
+
+                SetAllSettings();
+            }
+        }
+        public bool PointsEnabled
+        {
+            get => Settings.Default.last_five_points_enable;
+            set
+            {
+                Settings.Default.last_five_points_enable = value;
                 Settings.Default.Save();
 
                 SetAllSettings();
